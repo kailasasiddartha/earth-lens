@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; text-align: center; background: #f0f8f0; margin: 0; padding: 10px; }
+h1 { color: #228B22; }
+video { width: 100%; max-width: 640px; height: auto; border: 3px solid #228B22; border-radius: 12px; }
+button { padding: 15px 30px; margin: 15px; font-size: 18px; background: #228B22; color: white; border: none; border-radius: 8px; cursor: pointer; }
+button:disabled { background: #aaa; cursor: not-allowed; }
+#status { min-height: 1.5em; color: #d00; font-weight: bold; }
+a { display: block; margin: 20px; color: #228B22; font-size: 18px; }
