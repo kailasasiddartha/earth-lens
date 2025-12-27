@@ -23,15 +23,14 @@
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js";
     import { openDB } from "https://cdn.jsdelivr.net/npm/idb@8/build/iife/index-min.js";
 
-   const firebaseConfig = {
-  apiKey: "AIzaSyBJH5jp2gIiTiovJyAY31mbGIX0uruTbjQ",
-  authDomain: "earth-lens.firebaseapp.com",
-  projectId: "earth-lens",
-  storageBucket: "earth-lens.firebasestorage.app",
-  messagingSenderId: "818766063526",
-  appId: "1:818766063526:web:9551fb5e30637077b05167",
-  measurementId: "G-MYP60550DM"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyBJH5jp2gIiIovJyAV3ImBGIXBuruTbjq",
+      authDomain: "earth-lens.firebaseapp.com",
+      projectId: "earth-lens",
+      storageBucket: "earth-lens.appspot.com",
+      messagingSenderId: "818766663626",
+      appId: "1:818766663626:web:9581fb5e30637b77b05167"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -98,7 +97,6 @@
       } else {
         await db.put('submissions', submission);
         status.textContent = 'Offline: Submission queued.';
-        registerSync();
       }
 
       captureBtn.disabled = false;
@@ -119,14 +117,6 @@
       } catch (err) {
         await db.put('submissions', submission);
         status.textContent = 'Error - queued for retry.';
-        registerSync();
-      }
-    }
-
-    async function registerSync() {
-      if ('serviceWorker' in navigator && 'SyncManager' in window) {
-        const reg = await navigator.serviceWorker.ready;
-        await reg.sync.register('upload-queue');
       }
     }
 
