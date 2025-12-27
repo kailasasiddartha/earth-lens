@@ -1,129 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Earth Lens</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { text-align: center; background: #f0f8f0; font-family: Arial; padding: 20px; }
+    h1 { color: #228B22; }
+    p { font-size: 18px; }
+  </style>
 </head>
 <body>
   <h1>Earth Lens</h1>
-  <p>Capture potholes, waste dumps, or water/shoreline pollution.</p>
-  <video id="video" autoplay playsinline muted></video>
-  <canvas id="canvas" style="display:none;"></canvas>
-  <button id="capture">Capture Photo</button>
-  <button id="submit" disabled>Submit</button>
-  <p id="status">Requesting camera access...</p>
-  <a href="dashboard.html">View Live Map Dashboard</a>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js";
-    import { openDB } from "https://cdn.jsdelivr.net/npm/idb@8/build/iife/index-min.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBJH5jp2gIiIovJyAV3ImBGIXBuruTbjq",
-      authDomain: "earth-lens.firebaseapp.com",
-      projectId: "earth-lens",
-      storageBucket: "earth-lens.appspot.com",
-      messagingSenderId: "818766663626",
-      appId: "1:818766663626:web:9581fb5e30637b77b05167",
-      measurementId: "G-MYP6050DM"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const functions = getFunctions(app);
-
-    let db;
-    openDB('earthlens-queue', 1, {
-      upgrade(db) {
-        db.createObjectStore('submissions', { autoIncrement: true });
-      }
-    }).then(opened => db = opened);
-
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const captureBtn = document.getElementById('capture');
-    const submitBtn = document.getElementById('submit');
-    const status = document.getElementById('status');
-
-    let imageData = null;
-    let location = null;
-
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then(stream => {
-        video.srcObject = stream;
-        status.textContent = 'Camera ready. Tap Capture Photo.';
-      })
-      .catch(err => status.textContent = 'Camera error: ' + err.message);
-
-    captureBtn.onclick = () => {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-      imageData = canvas.toDataURL('image/jpeg', 0.85);
-      status.textContent = 'Photo captured. Getting location...';
-      captureBtn.disabled = true;
-      submitBtn.disabled = true;
-
-      navigator.geolocation.getCurrentPosition(pos => {
-        location = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        status.textContent = 'Location acquired. Ready to submit.';
-        submitBtn.disabled = false;
-      }, err => {
-        status.textContent = 'Location error: ' + err.message;
-      });
-    };
-
-    submitBtn.onclick = async () => {
-      if (!imageData || !location) return;
-      status.textContent = 'Processing...';
-      submitBtn.disabled = true;
-
-      if (!auth.currentUser) await signInAnonymously(auth);
-
-      const submission = {
-        imageBase64: imageData.split(',')[1],
-        lat: location.lat,
-        lng: location.lng,
-        timestamp: Date.now(),
-        uid: auth.currentUser.uid
-      };
-
-      if (navigator.onLine) {
-        await sendToServer(submission);
-      } else {
-        await db.put('submissions', submission);
-        status.textContent = 'Offline: Submission queued.';
-      }
-
-      captureBtn.disabled = false;
-      submitBtn.disabled = true;
-      imageData = null;
-      location = null;
-    };
-
-    async function sendToServer(submission) {
-      const verifyHazard = httpsCallable(functions, 'verifyHazard');
-      try {
-        const result = await verifyHazard(submission);
-        if (result.data.success) {
-          status.textContent = 'Verified and uploaded!';
-        } else {
-          status.textContent = 'Rejected: ' + result.data.reason;
-        }
-      } catch (err) {
-        await db.put('submissions', submission);
-        status.textContent = 'Error - queued for retry.';
-      }
-    }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
-    }
-  </script>
+  <p>Success! Your custom page is working.</p>
+  <p>This proves the welcome page is gone.</p>
+  <p>Now we can add the camera and full features.</p>
 </body>
 </html>
